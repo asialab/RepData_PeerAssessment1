@@ -1,25 +1,92 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Course Project 1
 
+This is a report for Course Project 1 of Reproducible Research.
 
 ## Loading and preprocessing the data
 
+```{r, echo=TRUE}
+data <- read.csv("activity.csv")
+names(data)
+nrow(data)
+```
+
+Changing the format of date will be useful further, when checking the differences between weekdays and weekends.
+```{r, echo=TRUE}
+data$date <- as.Date(data$date, "%Y-%m-%d")
+```
 
 
 ## What is mean total number of steps taken per day?
 
+```{r, echo=TRUE}
+totalStepsPerDay <- tapply(data$steps, data$date, sum, na.rm=TRUE)
+
+hist(totalStepsPerDay, col="red", xlab="Total Steps per Day", main="HISTOGRAM")
+```
+
+Mean of the total number of steps taken per day is:
+```{r, echo=TRUE}
+mean(totalStepsPerDay)
+```
+
+Median of the total number of steps taken per day is:
+```{r, echo=TRUE}
+median(totalStepsPerDay)
+```
 
 
 ## What is the average daily activity pattern?
 
+```{r, echo=TRUE}
+averageActivity <- tapply(data$steps, data$interval, mean, na.rm=TRUE)
+plot(averageActivity, type="l", xlab="5-minute interval", ylab="Average number of steps taken", main="Daily Activity Pattern")
+
+which.max(averageActivity)
+```
+The maximum number of steps contains the 104th interval identifier: 835. 
 
 
 ## Imputing missing values
 
+Total number of missing values in the dataset is:
+```{r, echo=TRUE}
+sum(is.na(data$steps))
+```
+
+The new dataset will have the missing values filled in using the mean for that 5-minute interval.
+```{r, echo=TRUE}
+newData <- data
+newData$steps[which(is.na(newData$steps))] <- tapply(newData$steps, newData$interval, mean, na.rm=TRUE)
+
+newTotalStepsPerDay <- tapply(newData$steps, newData$date, sum, na.rm=TRUE)
+hist(newTotalStepsPerDay, col="red", xlab="Total Steps per Day", main="HISTOGRAM from imputed dataset")
+```
+
+Mean of the total number of steps taken per day in imputed dataset is:
+```{r, echo=TRUE}
+mean(newTotalStepsPerDay)
+```
+
+Median of the total number of steps taken per day in imputed dataset is:
+```{r, echo=TRUE}
+median(newTotalStepsPerDay)
+```
+
+After imputing missing values histogram is more like normal distribution.
+Mean and median are closer to each other than in the dataset with missing values.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r, echo=TRUE}
+newData <- cbind(newData, day = "weekday")
+newData$day <- as.character(newData$day)
+newData$day[which(weekdays(newData$date) %in% c("sobota", "niedziela"))] <- "weekend"
+
+averageWeekday <- tapply(newData$steps[newData$day=="weekday"], newData$interval[newData$day=="weekday"], mean)
+averageWeekend <- tapply(newData$steps[newData$day=="weekend"], newData$interval[newData$day=="weekend"], mean)
+
+par(mfrow = c(2, 1))
+plot(averageWeekday, type="l", xlab="5-minute interval", ylab="Average number of steps", main="Weekday")
+plot(averageWeekend, type="l", xlab="5-minute interval", ylab="Average number of steps", main="Weekend")
+```
