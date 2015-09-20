@@ -24,12 +24,12 @@ totalStepsPerDay <- tapply(data$steps, data$date, sum, na.rm=TRUE)
 hist(totalStepsPerDay, col="red", xlab="Total Steps per Day", main="HISTOGRAM")
 ```
 
-Mean of the total number of steps taken per day is:
+Mean of the total number of steps taken per day is: 9354.23.
 ```{r, echo=TRUE}
 mean(totalStepsPerDay)
 ```
 
-Median of the total number of steps taken per day is:
+Median of the total number of steps taken per day is: 10395.
 ```{r, echo=TRUE}
 median(totalStepsPerDay)
 ```
@@ -48,7 +48,7 @@ The maximum number of steps contains the 104th interval identifier: 835.
 
 ## Imputing missing values
 
-Total number of missing values in the dataset is:
+Total number of missing values in the dataset is: 2304.
 ```{r, echo=TRUE}
 sum(is.na(data$steps))
 ```
@@ -62,12 +62,12 @@ newTotalStepsPerDay <- tapply(newData$steps, newData$date, sum, na.rm=TRUE)
 hist(newTotalStepsPerDay, col="red", xlab="Total Steps per Day", main="HISTOGRAM from imputed dataset")
 ```
 
-Mean of the total number of steps taken per day in imputed dataset is:
+Mean of the total number of steps taken per day in imputed dataset is: 10766.19.
 ```{r, echo=TRUE}
 mean(newTotalStepsPerDay)
 ```
 
-Median of the total number of steps taken per day in imputed dataset is:
+Median of the total number of steps taken per day in imputed dataset is: 10766.19.
 ```{r, echo=TRUE}
 median(newTotalStepsPerDay)
 ```
@@ -90,3 +90,5 @@ par(mfrow = c(2, 1))
 plot(averageWeekday, type="l", xlab="5-minute interval", ylab="Average number of steps", main="Weekday")
 plot(averageWeekend, type="l", xlab="5-minute interval", ylab="Average number of steps", main="Weekend")
 ```
+
+During weekdays there is lower activity.
